@@ -4,17 +4,8 @@
 #include <stdlib.h>
 #include <math.h>
 
+#define PATH "C:\\Users\\Stavros\\source\\repos\\stavrosgiannis\\PE1_Polygonberechnungen\\PE1_Polygonberechnungen\\Debug\\"
 #define ARRAY_SIZE( array ) ( sizeof( array ) / sizeof( array[0] ) )
-
-//int getArrayMin(int* x, int size) {
-//	int min = x[0], i;
-//	for (i = 1; i < size; i++) {
-//		if (x[i] < min) {
-//			min = x[i];
-//		}
-//	}
-//	return min;
-//}
 
 int getMathMinimum(double X_LENGTH, double Y_LENGTH) {
 	if (X_LENGTH > Y_LENGTH) return Y_LENGTH;
@@ -46,18 +37,16 @@ int main()
 
 	printf("\nLength: %d", ARRAY_SIZE(x_t));
 	printf("\nMath.Min: %d", getMathMinimum(ARRAY_SIZE(x_t), ARRAY_SIZE(y_t)));
+	double x[3];
+	double y[3];
 
-	printf("\n%f m%c\n", calc_GauﬂElling_polygon_surface(x_t, y_t, ARRAY_SIZE(x_t), ARRAY_SIZE(y_t)), 253);
-
-	double x;
-	double y;
 	// open the input file "polygon.txt" for reading
-	fp = fopen("polygon.txt", "r");
+	fp = fopen(PATH "polygon.txt", "r");
 	if (fp == NULL)
 	{
 		// if file could not be opened (wrong path, not readable, ...)
 		// output a short message and immediately exit
-		printf("Eingabedatei kann nicht geoeffnet werden.\n");
+		printf("\nEingabedatei kann nicht geoeffnet werden.\n");
 		scanf("%c", &resp);
 		exit(EXIT_FAILURE);
 	}
@@ -68,9 +57,11 @@ int main()
 
 	// the following loop reads a new value in every iteration
 	// until the end of the file or some invalid token is found
+	int i = 0;
+
 	while (1)
 	{
-		len = fscanf(fp, "%lf %lf", &x, &y);
+		len = fscanf(fp, "%lf %lf", &x[i], &y[i]);
 
 		if (len == EOF)
 			break;
@@ -79,13 +70,16 @@ int main()
 			scanf("%c", &resp);
 			exit(EXIT_FAILURE);
 		}
-
-		printf("Lese Eckpunkt: %6.2f/%6.2f\n", x, y);
+		printf("Lese Eckpunkt: %6.2f/%6.2f\n", x[i], y[i]);
+		i++;
 	}
 
 	// output results
 	printf("\nErgebnisse:\n");
-	printf("-----------\n\n");
+	printf("\n%f m%c", calc_GauﬂElling_polygon_surface(x_t, y_t, ARRAY_SIZE(x_t), ARRAY_SIZE(y_t)), 253);
+	printf("\n%f m%c", calc_GauﬂElling_polygon_surface(x, y, ARRAY_SIZE(x), ARRAY_SIZE(y)), 253);
+
+	printf("\n-----------\n\n");
 
 	// finally close the input file and clean up memory
 	fclose(fp);
