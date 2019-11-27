@@ -21,17 +21,17 @@ int getMathMinimum(double X_LENGTH, double Y_LENGTH) {
 	if (Y_LENGTH > X_LENGTH) return X_LENGTH;
 	if (Y_LENGTH == X_LENGTH) return X_LENGTH;
 }
-
-double calc_GaußElling_polygon_surface(double x[], double y[]) {
+//ARRAY_SIZE sizeof - kann nicht über die Funktion mitgegeben werden
+double calc_GaußElling_polygon_surface(double x[], double y[], int X_LENGTH, int Y_LENGTH) {
 	if ((x == NULL) || (y == NULL)) return 0; // auf leere Argumente testen
-	int n = getMathMinimum(ARRAY_SIZE(x), ARRAY_SIZE(y)); // Anzahl der Ecken des Polygons
+	int n = getMathMinimum(X_LENGTH, Y_LENGTH); // Anzahl der Ecken des Polygons
 	if (n < 3) return 0; // ein Polygon hat mindestens drei Eckpunkte
 	double a = 0.0;
 	for (size_t i = 0; i < n; i++)
 	{
 		a += (y[i] + y[(i + 1) % n]) * (x[i] - x[(i + 1) % n]);
 	}
-	return n;
+	return abs(a / 2.0);
 }
 
 int main()
@@ -41,12 +41,13 @@ int main()
 	size_t len = 0;
 	char resp;
 
-	double x_t[] = { 7.0, 8.0, 4.0, 1.0, 1.0 };
-	double y_t[] = { 0.0, 7.0, 9.0, 6.0, 2.0 };
+	double x_t[] = { 1.0, 5.0, -3.0, 1.0 };
+	double y_t[] = { 0.0, 4.0, 8.0, 0.0 };
 
 	printf("\nLength: %d", ARRAY_SIZE(x_t));
+	printf("\nMath.Min: %d", getMathMinimum(ARRAY_SIZE(x_t), ARRAY_SIZE(y_t)));
 
-	printf("\n%f\n", calc_GaußElling_polygon_surface(x_t, y_t));
+	printf("\n%f m%c\n", calc_GaußElling_polygon_surface(x_t, y_t, ARRAY_SIZE(x_t), ARRAY_SIZE(y_t)), 253);
 
 	double x;
 	double y;
