@@ -4,26 +4,36 @@
 #include <stdlib.h>
 #include <math.h>
 
-int getArrayMin(int* x, int size) {
-	int min = x[0], i;
-	for (i = 1; i < size; i++) {
-		if (x[i] < min) {
-			min = x[i];
-		}
+//int getArrayMin(int* x, int size) {
+//	int min = x[0], i;
+//	for (i = 1; i < size; i++) {
+//		if (x[i] < min) {
+//			min = x[i];
+//		}
+//	}
+//	return min;
+//}
+
+int getArrayLength(double INPUT_ARRAY[]) {
+	size_t length = sizeof(INPUT_ARRAY) / sizeof(INPUT_ARRAY[0]);
+	return length;
+}
+
+int getMathMinimum(double X_LENGTH, double Y_LENGTH) {
+	if (X_LENGTH > Y_LENGTH) return Y_LENGTH;
+	if (Y_LENGTH > X_LENGTH) return X_LENGTH;
+	if (Y_LENGTH == X_LENGTH) return X_LENGTH;
+}
+
+double calc_GauﬂElling_polygon_surface(double x[], double y[]) {
+	if ((x == NULL) || (y == NULL)) return 0; // auf leere Argumente testen
+	int n = getMathMinimum(getArrayLength(x), getArrayLength(y)); // Anzahl der Ecken des Polygons
+	if (n < 3) return 0; // ein Polygon hat mindestens drei Eckpunkte
+	double a = 0.0;
+	for (size_t i = 0; i < n; i++)
+	{
+		a += (y[i] + y[(i + 1) % n]) * (x[i] - x[(i + 1) % n]);
 	}
-	return min;
-}
-
-int getArrayLength(double _INPUT_ARRAY[]) {
-	int size;
-	size = sizeof(_INPUT_ARRAY) / sizeof(_INPUT_ARRAY[0]);
-	return size;
-}
-
-int calc_GauﬂElling_polygon_surface(double x[], double y[]) {
-	if ((x == NULL) || (y == NULL)) return 0.0;
-	int n = getArrayMin(x, getArrayLength(x));
-
 	return n;
 }
 
@@ -34,12 +44,15 @@ int main()
 	size_t len = 0;
 	char resp;
 
-	double x_t[20];
-	double y_t[20];
+	double x_t[] = { 7.0, 8.0, 4.0, 1.0, 1.0 };
+	double y_t[] = { 0.0, 7.0, 9.0, 6.0, 2.0 };
+
+	printf("\nLength: %i", getArrayLength(x_t));
+
+	printf("\n%d", calc_GauﬂElling_polygon_surface(x_t, y_t));
 
 	double x;
 	double y;
-
 	// open the input file "polygon.txt" for reading
 	fp = fopen("polygon.txt", "r");
 	if (fp == NULL)
