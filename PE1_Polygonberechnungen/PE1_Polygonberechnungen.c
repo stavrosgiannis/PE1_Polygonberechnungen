@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define PATH "C:\\Users\\Stavros\\source\\repos\\stavrosgiannis\\PE1_Polygonberechnungen\\PE1_Polygonberechnungen\\Debug\\"
+#define PATH "C:\\Users\\Stavros\\source\\repos\\PE1_Polygonberechnungen\\PE1_Polygonberechnungen\\Debug\\"
 #define ARRAY_SIZE( array ) ( sizeof( array ) / sizeof( array[0] ) )
 
 int getMathMinimum(double X_LENGTH, double Y_LENGTH) {
@@ -23,6 +23,17 @@ double calc_GauﬂElling_polygon_surface(double x[], double y[], int X_LENGTH, int
 		a += (y[i] + y[(i + 1) % n]) * (x[i] - x[(i + 1) % n]);
 	}
 	return abs(a / 2.0);
+}
+
+int pnpoly(int nvert, double* vertx, double* verty, double testx, double testy)
+{
+	int i, j, c = 0;
+	for (i = 0, j = nvert - 1; i < nvert; j = i++) {
+		if (((verty[i] > testy) != (verty[j] > testy)) &&
+			(testx < (vertx[j] - vertx[i]) * (testy - verty[i]) / (verty[j] - verty[i]) + vertx[i]))
+			c = !c;
+	}
+	return c;
 }
 
 int main()
