@@ -7,12 +7,15 @@
 #define PATH "C:\\Users\\Stavros\\source\\repos\\PE1_Polygonberechnungen\\PE1_Polygonberechnungen\\Debug\\"
 #define ARRAY_SIZE( array ) ( sizeof( array ) / sizeof( array[0] ) )
 
+double center_values[] = { 0.0, 0,0 };
+int anzahl_ecken = 0;
+
 int getMathMinimum(double X_LENGTH, double Y_LENGTH) {
 	if (X_LENGTH > Y_LENGTH) return Y_LENGTH;
 	if (Y_LENGTH > X_LENGTH) return X_LENGTH;
 	if (Y_LENGTH == X_LENGTH) return X_LENGTH;
 }
-//ARRAY_SIZE sizeof - kann nicht über die Funktion mitgegeben werden
+//ARRAY_SIZE -> sizeof - kann nicht über die Funktion mitgegeben werden
 double calc_GaußElling_polygon_surface(double x[], double y[], int X_LENGTH, int Y_LENGTH) {
 	if ((x == NULL) || (y == NULL)) return 0; // auf leere Argumente testen
 	int n = getMathMinimum(X_LENGTH, Y_LENGTH); // Anzahl der Ecken des Polygons
@@ -23,6 +26,21 @@ double calc_GaußElling_polygon_surface(double x[], double y[], int X_LENGTH, int
 		a += (y[i] + y[(i + 1) % n]) * (x[i] - x[(i + 1) % n]);
 	}
 	return abs(a / 2.0);
+}
+
+//Berechnung des Schwerpunkts
+void calc_geo_schwerpunkt(double x[], double y[], int X_LENGTH, int Y_LENGTH) {
+	if ((x == NULL) || (y == NULL)) return 0; // auf leere Argumente testen
+	int n = getMathMinimum(X_LENGTH, Y_LENGTH); // Anzahl der Ecken des Polygons
+	if (n < 3) return 0; // ein Polygon hat mindestens drei Eckpunkte
+	for (size_t i = 0; i < n; i++)
+	{
+		center_values[0] += (x[i + 1] + x[i + 1]) * ((x[i] * y[i + 1]) - (x[i + 1] * y[i]));
+		center_values[1] += (y[i + 1] + y[i + 1]) * ((x[i] * y[i + 1]) - (x[i + 1] * y[i]));
+	}
+
+	center_values[0] = abs(center_values[0] / (6 * calc_GaußElling_polygon_surface(x, y, X_LENGTH, Y_LENGTH)));
+	center_values[1] = abs(center_values[1] / (6 * calc_GaußElling_polygon_surface(x, y, X_LENGTH, Y_LENGTH)));
 }
 
 int pnpoly(int nvert, double* vertx, double* verty, double testx, double testy)
@@ -48,8 +66,8 @@ int main()
 
 	printf("\nLength: %d", ARRAY_SIZE(x_t));
 	printf("\nMath.Min: %d", getMathMinimum(ARRAY_SIZE(x_t), ARRAY_SIZE(y_t)));
-	double x[3];
-	double y[3];
+	double x[4];
+	double y[4];
 
 	// open the input file "polygon.txt" for reading
 	fp = fopen(PATH "polygon.txt", "r");
@@ -83,12 +101,16 @@ int main()
 		}
 		printf("Lese Eckpunkt: %6.2f/%6.2f\n", x[i], y[i]);
 		i++;
+		anzahl_ecken++;
 	}
 
 	// output results
 	printf("\nErgebnisse:\n");
 	printf("\n%f m%c", calc_GaußElling_polygon_surface(x_t, y_t, ARRAY_SIZE(x_t), ARRAY_SIZE(y_t)), 253);
 	printf("\n%f m%c", calc_GaußElling_polygon_surface(x, y, ARRAY_SIZE(x), ARRAY_SIZE(y)), 253);
+
+	calc_geo_schwerpunkt(x, y, ARRAY_SIZE(x), ARRAY_SIZE(y));
+	printf("\nDer Flaechenschwerpunkt liegt bei: %.6f/%.6f\n\n", center_values[0], center_values[1]);
 
 	printf("\n-----------\n\n");
 
