@@ -7,7 +7,7 @@
 #define PATH "C:\\Users\\Stavros\\source\\repos\\PE1_Polygonberechnungen\\PE1_Polygonberechnungen\\Debug\\"
 #define ARRAY_SIZE( array ) ( sizeof( array ) / sizeof( array[0] ) )
 
-double center_values[] = { 0.0, 0,0 };
+double center_values[2];
 int anzahl_ecken = 0;
 
 int getMathMinimum(double X_LENGTH, double Y_LENGTH) {
@@ -35,14 +35,8 @@ double calc_geo_schwerpunkt(double x[], double y[]) {
 	if (n < 3) return 0; // ein Polygon hat mindestens drei Eckpunkte
 	for (size_t i = 0; i < anzahl_ecken; i++)
 	{
-		if ((i + 1) >= anzahl_ecken) {
-			center_values[0] += (x[i] + x[i]) * ((x[i] * y[i]) - (x[0] * y[0]));
-			center_values[1] += (y[i] + y[i]) * ((x[i] * y[i]) - (x[0] * y[0]));
-		}
-		else {
-			center_values[0] += (x[i + 1] + x[i + 1]) * ((x[i] * y[i + 1]) - (x[i + 1] * y[i]));
-			center_values[1] += (y[i + 1] + y[i + 1]) * ((x[i] * y[i + 1]) - (x[i + 1] * y[i]));
-		}
+		center_values[0] += (x[i] + x[i + 1]) * ((x[i] * y[i + 1]) - (x[i + 1] * y[i]));
+		center_values[1] += (y[i] + y[i + 1]) * ((x[i] * y[i + 1]) - (x[i + 1] * y[i]));
 	}
 
 	center_values[0] = abs(center_values[0] / (6 * calc_GauﬂElling_polygon_surface(x, y)));
