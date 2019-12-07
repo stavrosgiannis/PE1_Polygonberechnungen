@@ -16,9 +16,9 @@ int getMathMinimum(double X_LENGTH, double Y_LENGTH) {
 	if (Y_LENGTH == X_LENGTH) return X_LENGTH;
 }
 //ARRAY_SIZE -> sizeof - kann nicht ¸ber die Funktion mitgegeben werden
-double calc_GauﬂElling_polygon_surface(double x[], double y[], int X_LENGTH, int Y_LENGTH) {
+double calc_GauﬂElling_polygon_surface(double x[], double y[]) {
 	if ((x == NULL) || (y == NULL)) return 0; // auf leere Argumente testen
-	int n = getMathMinimum(X_LENGTH, Y_LENGTH); // Anzahl der Ecken des Polygons
+	int n = anzahl_ecken; // Anzahl der Ecken des Polygons
 	if (n < 3) return 0; // ein Polygon hat mindestens drei Eckpunkte
 	double a = 0.0;
 	for (size_t i = 0; i < n; i++)
@@ -29,18 +29,24 @@ double calc_GauﬂElling_polygon_surface(double x[], double y[], int X_LENGTH, int
 }
 
 //Berechnung des Schwerpunkts
-void calc_geo_schwerpunkt(double x[], double y[], int X_LENGTH, int Y_LENGTH) {
+double calc_geo_schwerpunkt(double x[], double y[]) {
 	if ((x == NULL) || (y == NULL)) return 0; // auf leere Argumente testen
-	int n = getMathMinimum(X_LENGTH, Y_LENGTH); // Anzahl der Ecken des Polygons
+	int n = anzahl_ecken;
 	if (n < 3) return 0; // ein Polygon hat mindestens drei Eckpunkte
-	for (size_t i = 0; i < n; i++)
+	for (size_t i = 0; i < anzahl_ecken; i++)
 	{
-		center_values[0] += (x[i + 1] + x[i + 1]) * ((x[i] * y[i + 1]) - (x[i + 1] * y[i]));
-		center_values[1] += (y[i + 1] + y[i + 1]) * ((x[i] * y[i + 1]) - (x[i + 1] * y[i]));
+		if ((i + 1) >= anzahl_ecken) {
+			center_values[0] += (x[i] + x[i]) * ((x[i] * y[i]) - (x[0] * y[0]));
+			center_values[1] += (y[i] + y[i]) * ((x[i] * y[i]) - (x[0] * y[0]));
+		}
+		else {
+			center_values[0] += (x[i + 1] + x[i + 1]) * ((x[i] * y[i + 1]) - (x[i + 1] * y[i]));
+			center_values[1] += (y[i + 1] + y[i + 1]) * ((x[i] * y[i + 1]) - (x[i + 1] * y[i]));
+		}
 	}
 
-	center_values[0] = abs(center_values[0] / (6 * calc_GauﬂElling_polygon_surface(x, y, X_LENGTH, Y_LENGTH)));
-	center_values[1] = abs(center_values[1] / (6 * calc_GauﬂElling_polygon_surface(x, y, X_LENGTH, Y_LENGTH)));
+	center_values[0] = abs(center_values[0] / (6 * calc_GauﬂElling_polygon_surface(x, y)));
+	center_values[1] = abs(center_values[1] / (6 * calc_GauﬂElling_polygon_surface(x, y)));
 }
 
 int pnpoly(int nvert, double* vertx, double* verty, double testx, double testy)
@@ -61,13 +67,8 @@ int main()
 	size_t len = 0;
 	char resp;
 
-	double x_t[] = { 1.0, 5.0, -3.0, 1.0 };
-	double y_t[] = { 0.0, 4.0, 8.0, 0.0 };
-
-	printf("\nLength: %d", ARRAY_SIZE(x_t));
-	printf("\nMath.Min: %d", getMathMinimum(ARRAY_SIZE(x_t), ARRAY_SIZE(y_t)));
-	double x[4];
-	double y[4];
+	double x[100];
+	double y[100];
 
 	// open the input file "polygon.txt" for reading
 	fp = fopen(PATH "polygon.txt", "r");
@@ -106,10 +107,9 @@ int main()
 
 	// output results
 	printf("\nErgebnisse:\n");
-	printf("\n%f m%c", calc_GauﬂElling_polygon_surface(x_t, y_t, ARRAY_SIZE(x_t), ARRAY_SIZE(y_t)), 253);
-	printf("\n%f m%c", calc_GauﬂElling_polygon_surface(x, y, ARRAY_SIZE(x), ARRAY_SIZE(y)), 253);
+	printf("\n%f m%c", calc_GauﬂElling_polygon_surface(x, y), 253);
 
-	calc_geo_schwerpunkt(x, y, ARRAY_SIZE(x), ARRAY_SIZE(y));
+	calc_geo_schwerpunkt(x, y);
 	printf("\nDer Flaechenschwerpunkt liegt bei: %.6f/%.6f\n\n", center_values[0], center_values[1]);
 
 	printf("\n-----------\n\n");
