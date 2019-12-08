@@ -9,11 +9,17 @@
 
 //index 1 - X; index 2 - Y
 double center_values[2];
-int countPoints = 0;
-double INPUT_HOLES[2];
 
+//Anzahl der Points
+int countPoints = 0;
+
+//User Input von einem Punkt
+double INPUT_CHECK_POINTS[2];
+
+//directory	path string
 char cwd[100];
 
+//Summenbildung der Polygon Fläche
 double get_polygon_surface(double x[], double y[]) {
 	if ((x == NULL) || (y == NULL)) return 0; // auf leere Argumente testen
 	int n = countPoints; // Anzahl der Ecken des Polygons
@@ -26,15 +32,15 @@ double get_polygon_surface(double x[], double y[]) {
 	return (a / 2.0);
 }
 
-//Berechnung des Schwerpunkts
-double getGeo_Schwerpunkt(double x[], double y[]) {
+//Berechnung des Polygon Schwerpunkts
+double get_polygon_Schwerpunkt(double x[], double y[]) {
 	if ((x == NULL) || (y == NULL)) return 1; // auf leere Argumente testen
 	int n = countPoints;
 	if (n < 3) return 1; // ein Polygon hat mindestens drei Eckpunkte
 	for (size_t i = 0; i < countPoints; i++)
 	{
-		center_values[0] += (x[i] + x[i + 1]) * ((x[i] * y[i + 1]) - (x[i + 1] * y[i]));
-		center_values[1] += (y[i] + y[i + 1]) * ((x[i] * y[i + 1]) - (x[i + 1] * y[i]));
+		center_values[0] += (x[i] + x[(i + 1) % n]) * ((x[i] * y[(i + 1) % n]) - (x[(i + 1) % n] * y[i]));
+		center_values[1] += (y[i] + y[(i + 1) % n]) * ((x[i] * y[(i + 1) % n]) - (x[(i + 1) % n] * y[i]));
 	}
 
 	center_values[0] = center_values[0] / (6 * get_polygon_surface(x, y));
@@ -42,22 +48,22 @@ double getGeo_Schwerpunkt(double x[], double y[]) {
 	return 0;
 }
 
+//Even-Odd bestimmen ob der punkt innerhalb/außerhalb ist
 int pnpoly(int nvert, double* vertx, double* verty, double testx, double testy)
 {
 	int i, j, c = 0;
 	for (i = 0, j = nvert - 1; i < nvert; j = i++) {
-		if (((verty[i] > testy) != (verty[j] > testy)) &&
-			(testx < (vertx[j] - vertx[i]) * (testy - verty[i]) / (verty[j] - verty[i]) + vertx[i]))
+		if (((verty[i] > testy) != (verty[j] > testy)) && (testx < (vertx[j] - vertx[i]) * (testy - verty[i]) / (verty[j] - verty[i]) + vertx[i]))
 			c = !c;
 	}
 	return c;
 }
 
+//Bestimmung des Workspaces für den File Path
 char getDIR() {
 #include <io.h>
 
 	char* getcwd(char* buf, size_t size);
-
 	if (getcwd(cwd, sizeof(cwd)) != NULL) {
 		printf("Current working directory: %s\n", cwd);
 		return cwd;
@@ -114,6 +120,10 @@ int main()
 			printf("Es sind nicht mehr als 100 Eckpunkte erlaubt!");
 			exit(EXIT_FAILURE);
 		}
+		/*if (INPUT_x_coordinates > !0) {
+			printf("Es müssen mehr als 0 Eckpunkte vorhanden sein!");
+			exit(EXIT_FAILURE);
+		}*/
 		printf("Lese Eckpunkt: %6.2f[X]/%6.2f[Y]\n", INPUT_x_coordinates[i], INPUT_y_coordinates[i]);
 		i++;
 		countPoints++;
@@ -124,16 +134,16 @@ int main()
 	get_polygon_surface(INPUT_x_coordinates, INPUT_y_coordinates);
 	printf("\nDie Gesamtflaeche betraegt: %fm%c", get_polygon_surface(INPUT_x_coordinates, INPUT_y_coordinates), 253);
 
-	getGeo_Schwerpunkt(INPUT_x_coordinates, INPUT_y_coordinates);
+	get_polygon_Schwerpunkt(INPUT_x_coordinates, INPUT_y_coordinates);
 	printf("\nDer Flaechenschwerpunkt liegt bei: %.6f[X]/%.6f[Y]\n\n", center_values[0], center_values[1]);
 
 	printf("--------------------------------------------------------\n");
 
 	//Abfrage der Lochposition
 	printf("Bitte geben sie die gewuenschte Lochposition an(x/y):\n");
-	scanf("%lf/%lf", &INPUT_HOLES[0], &INPUT_HOLES[1]);
+	scanf("%lf/%lf", &INPUT_CHECK_POINTS[0], &INPUT_CHECK_POINTS[1]);
 	//Even-Odd-Berechnung
-	if (pnpoly(countPoints, INPUT_x_coordinates, INPUT_y_coordinates, INPUT_HOLES[0], INPUT_HOLES[1]))
+	if (pnpoly(countPoints, INPUT_x_coordinates, INPUT_y_coordinates, INPUT_CHECK_POINTS[0], INPUT_CHECK_POINTS[1]))
 	{
 		printf("Der gegebene Punkt befindet sich innerhalb des Polygons");
 	}
