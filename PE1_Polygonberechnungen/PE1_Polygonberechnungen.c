@@ -120,10 +120,6 @@ int main()
 			printf("Es sind nicht mehr als 100 Eckpunkte erlaubt!");
 			exit(EXIT_FAILURE);
 		}
-		/*if (INPUT_x_coordinates > !0) {
-			printf("Es müssen mehr als 0 Eckpunkte vorhanden sein!");
-			exit(EXIT_FAILURE);
-		}*/
 		printf("Lese Eckpunkt: %6.2f[X]/%6.2f[Y]\n", INPUT_x_coordinates[i], INPUT_y_coordinates[i]);
 		i++;
 		countPoints++;
