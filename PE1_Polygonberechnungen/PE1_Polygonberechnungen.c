@@ -3,8 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
-#define PATH "C:\\Users\\Stavros\\source\\repos\\PE1_Polygonberechnungen\\PE1_Polygonberechnungen\\Debug\\"
+char dirPATH[];
 #define ARRAY_SIZE( array ) ( sizeof( array ) / sizeof( array[0] ) )
 
 //index 1 - X; index 2 - Y
@@ -53,6 +54,23 @@ int pnpoly(int nvert, double* vertx, double* verty, double testx, double testy)
 	return c;
 }
 
+
+int getDIR(){
+	#include <unistd.h>
+
+	char *getcwd(char *buf, size_t size);
+	char cwd[100];
+
+	if (getcwd(cwd, sizeof(cwd)) != NULL){
+		printf("Current working directory:\n%s", cwd);
+		dirPATH == cwd;
+	}else {
+		printf("getcwd() error");
+		dirPATH == "";
+	return 1;
+	}
+}
+
 int main()
 {
 	// variables for reading the measurements from file
@@ -63,8 +81,12 @@ int main()
 	double INPUT_x_coordinates[100];
 	double INPUT_y_coordinates[100];
 
+	getDIR();
+	
+
 	// open the input file "polygon.txt" for reading
-	fp = fopen("polygon.txt", "r");
+	//printf("%s", strcat(dirPATH, "/polygon.txt"));
+	fp = fopen(strcat(dirPATH, "/polygon.txt"), "r");
 	if (fp == NULL)
 	{
 		// if file could not be opened (wrong path, not readable, ...)
@@ -91,6 +113,10 @@ int main()
 		else if (len == 0) {
 			printf("Unerwartetes Zeichen in der Eingabedatei.");
 			scanf("%c", &resp);
+			exit(EXIT_FAILURE);
+		}
+		if (len > 100){
+			printf("Es sind nicht mehr als 100 Eckpunkte erlaubt!");
 			exit(EXIT_FAILURE);
 		}
 		printf("Lese Eckpunkt: %6.2f[X]/%6.2f[Y]\n", INPUT_x_coordinates[i], INPUT_y_coordinates[i]);
