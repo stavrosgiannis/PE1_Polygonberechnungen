@@ -92,7 +92,7 @@ int main()
 	{
 		// if file could not be opened (wrong path, not readable, ...)
 		// output a short message and immediately exit
-		printf("\nEingabedatei kann nicht geoeffnet werden.\n");
+		printf("\nBitte vergewissere dich, dass die 'polygon.txt' im oben angegebenen Pfad liegt!\n");
 		scanf("%c", &resp);
 		exit(EXIT_FAILURE);
 	}
@@ -132,7 +132,7 @@ int main()
 	// output results
 	printf("\nErgebnisse:");
 	get_polygon_surface(INPUT_x_coordinates, INPUT_y_coordinates);
-	printf("\nDie Gesamtflaeche betraegt: %fm%c", get_polygon_surface(INPUT_x_coordinates, INPUT_y_coordinates), 253);
+	printf("\nDie Gesamtflaeche betraegt: %f%c", get_polygon_surface(INPUT_x_coordinates, INPUT_y_coordinates), 253);
 
 	get_polygon_Schwerpunkt(INPUT_x_coordinates, INPUT_y_coordinates);
 	printf("\nDer Flaechenschwerpunkt liegt bei: %.6f[X]/%.6f[Y]\n\n", center_values[0], center_values[1]);

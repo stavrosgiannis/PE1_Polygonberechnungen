@@ -153,9 +153,6 @@
   <ItemGroup>
     <ClCompile Include="PE1_Polygonberechnungen.c" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="Debug\polygon.txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
